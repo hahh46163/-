@@ -711,7 +711,15 @@
       var baseH = 3800;
       for (var i = 0; i < n; i++) {
         var t = i / Math.max(n - 1, 1);
-        users.push(Math.round(baseU + t * 2800 + i * 180));
+        // 累计用户：二次趋势（开口向上）+ 多频正弦波动；保证单调不减
+        var quadTrend = baseU + 2600 * t * t + 820 * t;
+        var oscillate =
+          105 * Math.sin(3.6 * Math.PI * t) +
+          68 * Math.sin(6.4 * Math.PI * t + 0.65) +
+          38 * Math.sin(11 * Math.PI * t);
+        var u = Math.round(quadTrend + oscillate);
+        if (i > 0) u = Math.max(u, users[i - 1] + 1);
+        users.push(u);
         hours.push(Math.round(baseH + t * 10200 + i * 520));
       }
       return {
