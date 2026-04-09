@@ -720,7 +720,13 @@
         var u = Math.round(quadTrend + oscillate);
         if (i > 0) u = Math.max(u, users[i - 1] + 1);
         users.push(u);
-        hours.push(Math.round(baseH + t * 10200 + i * 520));
+       // 当月时长：二次趋势 + 波动（可升可降）；幅度与原先终点量级接近
+        var quadHours = baseH + 10200 * t * t + 6200 * t;
+        var hoursWave =
+          480 * Math.sin(3.1 * Math.PI * t + 0.4) +
+          320 * Math.sin(5.9 * Math.PI * t) +
+          190 * Math.sin(10.5 * Math.PI * t + 1.1);
+        hours.push(Math.max(900, Math.round(quadHours + hoursWave)));
       }
       return {
         labels: series.labels,
